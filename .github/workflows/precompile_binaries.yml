@@ -1,18 +1,27 @@
 on:
   push:
-    branches: [ main ]
+    branches: [ qunleashed ]
+  workflow_dispatch:
 
 name: Precompile Binaries
+
+permissions:
+  contents: write
+
+env:
+  ANDROID_NDK_VERSION: 28.2.13676358
 
 jobs:
   Precompile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 #v2.7.0
-      - uses: dart-lang/setup-dart@b64355ae6ca0b5d484f0106a033dd1388965d06d #v1.6.0
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - name: Install Android NDK
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;$ANDROID_NDK_VERSION" > /dev/null
       - name: Precompile (Android)
-        run: dart run build_tool precompile-binaries -v --manifest-dir=../../android/rust --repository=irondash/irondash --android-sdk-location=/usr/local/lib/android/sdk --android-ndk-version=24.0.8215888 --android-min-sdk-version=23 --target=armv7-linux-androideabi --target=aarch64-linux-android --target=i686-linux-android --target=x86_64-linux-android
+        run: dart run build_tool precompile-binaries -v --manifest-dir=../../android/rust --repository=${{ github.repository }} --android-sdk-location="$ANDROID_HOME" --android-ndk-version=$ANDROID_NDK_VERSION --android-min-sdk-version=23 --target=armv7-linux-androideabi --target=aarch64-linux-android --target=i686-linux-android --target=x86_64-linux-android
         working-directory: engine_context/dart/cargokit/build_tool
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
