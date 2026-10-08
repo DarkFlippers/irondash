@@ -1,6 +1,6 @@
 precompiled_binaries:
   # Uri prefix used when downloading prebuilt binaries.
-  url_prefix: https://github.com/apfxtech/irondash/releases/download/precompiled_
+  url_prefix: https://github.com/DarkFlippers/irondash/releases/download/precompiled_
 
   # Public key for verifying downloaded prebuilt binaries.
   public_key: ab491e5cfc16703375ba544fc6a822064d13e1644fa7a3ab942fbd3e3e7b7ee1
